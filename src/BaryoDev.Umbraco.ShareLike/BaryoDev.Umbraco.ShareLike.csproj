@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <PackageId>BaryoDev.Umbraco.ShareLike</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>BaryoDev</Authors>
+    <Description>Share buttons, a rate-limited like count and reading time for Umbraco 17, with a most-liked dashboard.</Description>
+    <PackageTags>umbraco umbraco-marketplace share like reading-time blog</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/BaryoDev/BaryoDev.Umbraco.ShareLike</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/BaryoDev/BaryoDev.Umbraco.ShareLike</RepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.*" />
+    <PackageReference Include="Umbraco.Cms.Api.Management" Version="17.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <None Include="../../icon.png" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>
