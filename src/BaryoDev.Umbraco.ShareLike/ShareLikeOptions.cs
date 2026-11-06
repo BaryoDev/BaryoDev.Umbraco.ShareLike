@@ -11,8 +11,10 @@ public sealed class ShareLikeOptions
     public int WordsPerMinute { get; set; } = 200;
     public string ReadingTimeFormat { get; set; } = "{0} min read";
 
-    /// <summary>Render order. facebook, linkedin, x, bluesky, mastodon, email, copy, native.</summary>
-    public string[] ShareTargets { get; set; } = ["linkedin", "x", "facebook", "email", "native", "copy"];
+    /// <summary>Render order. Empty means the default list. facebook, linkedin, x, bluesky, mastodon, email, copy, native.</summary>
+    public string[] ShareTargets { get; set; } = [];
+
+    public static readonly string[] DefaultShareTargets = ["linkedin", "x", "facebook", "email", "native", "copy"];
 
     public string MastodonInstance { get; set; } = "mastodon.social";
 

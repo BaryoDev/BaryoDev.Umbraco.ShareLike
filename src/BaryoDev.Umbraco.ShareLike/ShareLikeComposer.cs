@@ -18,9 +18,17 @@ public sealed class ShareLikeComposer : IComposer
     public void Compose(IUmbracoBuilder builder)
     {
         builder.Services.AddOptions<ShareLikeOptions>().BindConfiguration(ShareLikeOptions.Section);
+        // The binder appends to array defaults, so the default list is applied here when nothing is configured.
+        builder.Services.PostConfigure<ShareLikeOptions>(o =>
+        {
+            o.ShareTargets = o.ShareTargets.Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
+            if (o.ShareTargets.Length == 0)
+            {
+                o.ShareTargets = ShareLikeOptions.DefaultShareTargets;
+            }
+        });
         builder.Services.TryAddSingleton(TimeProvider.System);
         builder.Services.AddSingleton<DailySalt>();
-        builder.Services.AddSingleton<LikeDedupe>();
         builder.Services.AddScoped<ILikeStore, LikeStore>();
         builder.Services.AddScoped<ILikeableContentLookup, LikeableContentLookup>();
         builder.Services.AddSingleton<IReadingTimeCalculator, ReadingTimeCalculator>();
