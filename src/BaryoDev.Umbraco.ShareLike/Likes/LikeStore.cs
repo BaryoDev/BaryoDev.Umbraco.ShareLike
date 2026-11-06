@@ -11,7 +11,8 @@ public interface ILikeStore
     /// <summary>Adds one like and returns the new count.</summary>
     int Increment(Guid key);
 
-    IReadOnlyList<LikeTotal> Top(int take);
+    /// <summary>One page of totals, most liked first. Page is 1-based.</summary>
+    IReadOnlyList<LikeTotal> Top(int page, int pageSize);
 }
 
 public sealed class LikeStore(IScopeProvider scopes) : ILikeStore
@@ -47,15 +48,15 @@ public sealed class LikeStore(IScopeProvider scopes) : ILikeStore
         return Get(key);
     }
 
-    public IReadOnlyList<LikeTotal> Top(int take)
+    public IReadOnlyList<LikeTotal> Top(int page, int pageSize)
     {
         using var scope = scopes.CreateScope(autoComplete: true);
         var s = scope.Database.SqlContext.SqlSyntax;
-        var page = scope.Database.Page<LikeDto>(
-            1,
-            Math.Clamp(take, 1, 200),
+        var result = scope.Database.Page<LikeDto>(
+            Math.Max(1, page),
+            Math.Clamp(pageSize, 1, 200),
             $"SELECT * FROM {s.GetQuotedTableName(LikeDto.TableName)} ORDER BY {s.GetQuotedColumnName("Count")} DESC");
-        return page.Items.Select(r => new LikeTotal(r.PostKey, r.Count)).ToList();
+        return result.Items.Select(r => new LikeTotal(r.PostKey, r.Count)).ToList();
     }
 
     private bool TryUpdate(Guid key)

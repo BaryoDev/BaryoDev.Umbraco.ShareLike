@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Api.Management.Controllers;
 using Umbraco.Cms.Api.Management.Routing;
+using Umbraco.Cms.Api.Management.Services.PermissionFilter;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Models;
@@ -23,14 +24,16 @@ public sealed record MostLikedItem(Guid Key, string Name, int Count);
 [Authorize(Policy = AuthorizationPolicies.SectionAccessContent)]
 public sealed class ShareLikeController(
     ILikeStore store,
-    IContentService contentService,
     IBackOfficeSecurityAccessor security,
     IEntityService entityService,
+    IDocumentPermissionFilterService browseFilter,
     AppCaches appCaches) : ManagementApiControllerBase
 {
+    private const int MaxPages = 10;
+
     [HttpGet("top")]
     [ProducesResponseType<IReadOnlyList<MostLikedItem>>(StatusCodes.Status200OK)]
-    public IActionResult Top(int take = 20)
+    public async Task<IActionResult> Top(int take = 20)
     {
         var user = security.BackOfficeSecurity?.CurrentUser;
         if (user is null)
@@ -38,15 +41,41 @@ public sealed class ShareLikeController(
             return Forbid();
         }
 
-        // Trashed content is hidden. Otherwise the item's path must run through one of the user's start nodes.
+        take = Math.Clamp(take, 1, 50);
         // A start node of -1 means the user has root access.
         var starts = user.CalculateContentStartNodeIds(entityService, appCaches) ?? [];
         var root = starts.Contains(Constants.System.Root);
-        var items = store.Top(take)
-            .Select(t => (Total: t, Content: contentService.GetById(t.Key)))
-            .Where(x => x.Content is not null && !x.Content.Trashed && (root || InStartNodes(x.Content.Path, starts)))
-            .Select(x => new MostLikedItem(x.Total.Key, x.Content!.Name ?? x.Total.Key.ToString(), x.Total.Count))
-            .ToList();
+
+        // Page through the totals until there are enough rows this user may see, so a restricted
+        // editor still gets a full list. Capped so a user who sees almost nothing costs a bounded scan.
+        var items = new List<MostLikedItem>();
+        for (var page = 1; page <= MaxPages && items.Count < take; page++)
+        {
+            var totals = store.Top(page, take);
+            if (totals.Count == 0)
+            {
+                break;
+            }
+
+            var entities = entityService.GetAll(UmbracoObjectTypes.Document, totals.Select(x => x.Key).ToArray())
+                .Where(e => !e.Trashed && (root || InStartNodes(e.Path, starts)))
+                .ToArray();
+            var allowed = (await browseFilter.FilterAsync(entities, entities.Length)).Entities
+                .ToDictionary(e => e.Key);
+            foreach (var total in totals)
+            {
+                if (allowed.TryGetValue(total.Key, out var entity) && items.Count < take)
+                {
+                    items.Add(new MostLikedItem(total.Key, entity.Name ?? total.Key.ToString(), total.Count));
+                }
+            }
+
+            if (totals.Count < take)
+            {
+                break;
+            }
+        }
+
         return Ok(items);
     }
 
