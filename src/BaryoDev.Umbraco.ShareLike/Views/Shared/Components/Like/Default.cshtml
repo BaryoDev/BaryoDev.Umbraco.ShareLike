@@ -1,6 +1,6 @@
 @model BaryoDev.Umbraco.ShareLike.Components.LikeModel
-<p class="bdsl-like" data-bdsl-like data-url="/api/sharelike/likes/@Model.Key">
-    <button type="button" class="bdsl-btn @Model.ButtonClass" data-bdsl-like-btn aria-pressed="@(Model.Liked ? "true" : "false")" disabled="@Model.Liked">@Model.Label</button>
+<p class="bdsl-like" data-bdsl-like data-url="/api/sharelike/likes/@Model.Key" data-cookie="bd_liked_@Model.Key">
+    <button type="button" class="bdsl-btn @Model.ButtonClass" data-bdsl-like-btn aria-pressed="false">@Model.Label</button>
     <span class="bdsl-like__count"><span data-bdsl-like-count>@Model.Count</span> <span data-bdsl-like-label>@(Model.Count == 1 ? "like" : "likes")</span></span>
     <span class="bdsl-sr-only" role="status" data-bdsl-like-status></span>
 </p>

@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace BaryoDev.Umbraco.ShareLike.Components;
 
-public sealed record LikeModel(Guid Key, int Count, bool Liked, string Label, string ButtonClass);
+public sealed record LikeModel(Guid Key, int Count, string Label, string ButtonClass);
 
 /// <summary>Renders nothing unless the content type is listed in LikeContentTypes.</summary>
 public sealed class LikeViewComponent(
@@ -19,7 +19,6 @@ public sealed class LikeViewComponent(
         }
 
         var o = options.CurrentValue;
-        var liked = Request.Cookies.ContainsKey(LikesController.CookiePrefix + content.Key);
-        return View(new LikeModel(content.Key, store.Get(content.Key), liked, o.LikeButtonLabel, o.LikeButtonCssClass));
+        return View(new LikeModel(content.Key, store.Get(content.Key), o.LikeButtonLabel, o.LikeButtonCssClass));
     }
 }
