@@ -16,7 +16,7 @@ public sealed class LikeDedupe(DailySalt salt)
     private readonly HashSet<string> _seen = [];
     private byte[]? _saltInUse;
 
-    /// <summary>True the first time this address likes this key today. False for a repeat.</summary>
+    /// <summary>True the first time this address likes this key today. False for a repeat or when the set is full.</summary>
     public bool TryAdd(IPAddress? ip, Guid key)
     {
         var current = salt.Current();
@@ -30,8 +30,8 @@ public sealed class LikeDedupe(DailySalt salt)
                 _saltInUse = current;
             }
 
-            // Full set: accept the like rather than refuse it. The cookie and rate limit still apply.
-            return _seen.Count >= MaxEntries || _seen.Add(hash);
+            // Full set: refuse until the salt rolls over, so a flood cannot switch the check off.
+            return _seen.Count < MaxEntries && _seen.Add(hash);
         }
     }
 }
