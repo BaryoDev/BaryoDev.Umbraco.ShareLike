@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace BaryoDev.Umbraco.ShareLike.Likes;
 
-public sealed class LikesController(ILikeStore store, ILikeableContentLookup content) : Controller
+public sealed class LikesController(ILikeStore store, ILikeableContentLookup content, LikeDedupe dedupe) : Controller
 {
     public const string CookiePrefix = "bd_liked_";
 
@@ -13,6 +13,11 @@ public sealed class LikesController(ILikeStore store, ILikeableContentLookup con
     [EnableRateLimiting(LikeRateLimit.PolicyName)]
     public IActionResult Like(Guid key)
     {
+        if (!IsSameSite())
+        {
+            return StatusCode(StatusCodes.Status403Forbidden);
+        }
+
         if (!content.Exists(key))
         {
             return NotFound();
@@ -20,6 +25,11 @@ public sealed class LikesController(ILikeStore store, ILikeableContentLookup con
 
         var cookie = CookiePrefix + key;
         if (Request.Cookies.ContainsKey(cookie))
+        {
+            return StatusCode(StatusCodes.Status409Conflict, new { count = store.Get(key) });
+        }
+
+        if (!dedupe.TryAdd(HttpContext.Connection.RemoteIpAddress, key))
         {
             return StatusCode(StatusCodes.Status409Conflict, new { count = store.Get(key) });
         }
@@ -34,5 +44,22 @@ public sealed class LikesController(ILikeStore store, ILikeableContentLookup con
             Path = "/",
         });
         return Ok(new { count });
+    }
+
+    // Refuse cross-site requests. With neither header (old clients, no-JS) the request is allowed.
+    private bool IsSameSite()
+    {
+        if (Request.Headers.TryGetValue("Sec-Fetch-Site", out var site) && site.Count > 0)
+        {
+            return site == "same-origin" || site == "none";
+        }
+
+        if (Request.Headers.TryGetValue("Origin", out var origin) && origin.Count > 0)
+        {
+            return Uri.TryCreate(origin.ToString(), UriKind.Absolute, out var uri)
+                && string.Equals(uri.Authority, Request.Host.Value, StringComparison.OrdinalIgnoreCase);
+        }
+
+        return true;
     }
 }

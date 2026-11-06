@@ -20,6 +20,7 @@ public sealed class ShareLikeComposer : IComposer
         builder.Services.AddOptions<ShareLikeOptions>().BindConfiguration(ShareLikeOptions.Section);
         builder.Services.TryAddSingleton(TimeProvider.System);
         builder.Services.AddSingleton<DailySalt>();
+        builder.Services.AddSingleton<LikeDedupe>();
         builder.Services.AddScoped<ILikeStore, LikeStore>();
         builder.Services.AddScoped<ILikeableContentLookup, LikeableContentLookup>();
         builder.Services.AddSingleton<IReadingTimeCalculator, ReadingTimeCalculator>();
