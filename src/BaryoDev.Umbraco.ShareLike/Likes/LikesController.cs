@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace BaryoDev.Umbraco.ShareLike.Likes;
 
-public sealed class LikesController(ILikeStore store, ILikeableContentLookup content, LikeDedupe dedupe) : Controller
+public sealed class LikesController(ILikeStore store, ILikeableContentLookup content) : Controller
 {
     public const string CookiePrefix = "bd_liked_";
 
@@ -29,15 +29,11 @@ public sealed class LikesController(ILikeStore store, ILikeableContentLookup con
             return StatusCode(StatusCodes.Status409Conflict, new { count = store.Get(key) });
         }
 
-        if (!dedupe.TryAdd(HttpContext.Connection.RemoteIpAddress, key))
-        {
-            return StatusCode(StatusCodes.Status409Conflict, new { count = store.Get(key) });
-        }
-
         var count = store.Increment(key);
         Response.Cookies.Append(cookie, "1", new CookieOptions
         {
-            HttpOnly = true,
+            // JS reads this to show the liked state, so pages stay cacheable. It holds no secret.
+            HttpOnly = false,
             Secure = true,
             SameSite = SameSiteMode.Lax,
             MaxAge = TimeSpan.FromDays(365),

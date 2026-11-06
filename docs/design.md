@@ -15,7 +15,7 @@ Reading time is new. baryo.dev has no reading time code, so it was written for t
 ## Kept as is
 
 - Table `bdLike` (columns `PostKey`, `Count`) and cookie `bd_liked_{key}`. A site that already runs the baryo.dev code keeps its counts and its visitors keep their "liked" state.
-- The abuse model: the IP is hashed with a salt that is held in memory and replaced every UTC day. The address is never stored. IPv6 is cut to the /64. One like per visitor per content item through an HttpOnly cookie.
+- The abuse model: the IP is hashed with a salt that is held in memory and replaced every UTC day. The address is never stored. IPv6 is cut to the /64. One like per visitor per content item through the `bd_liked_{key}` cookie. The cookie is readable by JS and holds no secret, so `like.js` can show the liked state and the HTML is the same for every visitor (safe behind a CDN or output cache).
 - Look: same layout, spacing and mono type. Colours come from CSS custom properties with the baryo.dev value as the last fallback, for example `var(--bdsl-green, var(--green, #0b7a55))`. A site that already has baryo.dev style tokens renders the same. Others set `--bdsl-*`.
 
 ## Generalised
@@ -27,6 +27,14 @@ Reading time is new. baryo.dev has no reading time code, so it was written for t
 - Share targets are a list in the options. The order is the render order.
 - Class names are prefixed `bdsl-` so they do not collide with a site's own `.share` or `.like`. `LikeButtonCssClass` adds a site class (for example `btn`) to the like button.
 
+## Cross-site check
+
+`POST` is refused with 403 when `Sec-Fetch-Site` is present and is not `same-origin` or `none`, or when there is no `Sec-Fetch-Site` and `Origin` does not match the request host. With neither header the request is allowed, so old clients and no-JS still work.
+
+## No per-address dedupe
+
+An in-memory set of hashed (address, key) pairs was tried and removed. It locked out later visitors behind one NAT, CGNAT or proxy address, refused or stopped recording once full, and recorded the hash before the increment so a database failure locked the visitor out. The cookie and the rate limit are the guard, as on baryo.dev. Clearing cookies allows another like, within the rate limit.
+
 ## Options
 
 Section `BaryoDev:ShareLike`.
@@ -37,7 +45,7 @@ Section `BaryoDev:ShareLike`.
 | `ReadingTimeProperty` | `body` |
 | `WordsPerMinute` | 200 |
 | `ReadingTimeFormat` | `{0} min read` |
-| `ShareTargets` | `linkedin, x, facebook, email, native, copy` |
+| `ShareTargets` | empty, which means `linkedin, x, facebook, email, native, copy` |
 | `MastodonInstance` | `mastodon.social` |
 | `LikePermitLimit` | 10 |
 | `LikeWindowSeconds` | 60 |

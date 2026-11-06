@@ -10,6 +10,8 @@ dotnet add package BaryoDev.Umbraco.ShareLike
 
 The package creates its own table (`bdLike`) on first boot through a package migration plan.
 
+Needs Umbraco 17.8.1 or newer 17.x.
+
 ## Configure
 
 `appsettings.json`:
@@ -63,13 +65,14 @@ The CSS uses custom properties with the baryo.dev value as the fallback. Overrid
 ## Likes
 
 - `POST /api/sharelike/likes/{key}` adds one like. The content must be published and its type listed in `LikeContentTypes`.
-- One like per visitor per item, through an HttpOnly cookie (`bd_liked_{key}`).
+- One like per visitor per item, through a cookie (`bd_liked_{key}`). `like.js` reads it to show the liked state, so the HTML is the same for every visitor and can be cached.
+- A cross-site POST gets 403 (`Sec-Fetch-Site`, or `Origin` when that is missing). A request with neither header is allowed.
 - Rate limited per address (default 10 per minute). The address is hashed with a salt that lives in memory and changes every UTC day. It is never stored. IPv6 is cut to the /64.
 - Behind a proxy, set up forwarded headers so the real address reaches the limiter.
 
 ## Backoffice
 
-A "Most liked" dashboard in the Content section lists the top 20 items by likes.
+A "Most liked" dashboard in the Content section lists the top 20 items by likes. It hides trashed content and content outside the user's start nodes or without Browse permission.
 
 ## License
 
