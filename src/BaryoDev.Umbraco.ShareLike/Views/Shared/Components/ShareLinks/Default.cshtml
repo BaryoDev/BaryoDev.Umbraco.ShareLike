@@ -1,0 +1,23 @@
+@model BaryoDev.Umbraco.ShareLike.Components.ShareLinksModel
+<nav class="bdsl-share" aria-label="@Model.Label" data-bdsl-share data-url="@Model.Url" data-title="@Model.Title">
+    <span class="bdsl-meta">@Model.Label</span>
+    @foreach (var link in Model.Links)
+    {
+        if (link.External)
+        {
+            <a class="bdsl-share__link" href="@link.Href" rel="noopener noreferrer" target="_blank">@link.Label</a>
+        }
+        else
+        {
+            <a class="bdsl-share__link" href="@link.Href">@link.Label</a>
+        }
+    }
+    @if (Model.Native)
+    {
+        <button type="button" class="bdsl-share__link" data-bdsl-native hidden>@Model.Label</button>
+    }
+    @if (Model.Copy)
+    {
+        <button type="button" class="bdsl-share__link" data-bdsl-copy hidden>Copy link</button>
+    }
+</nav>
