@@ -1,0 +1,22 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "PackageType": "Package",
+  "Category": "Developer Tools",
+  "Description": "Share buttons, a rate-limited like count and reading time for Umbraco 17. Pick the share targets (Facebook, LinkedIn, X, Bluesky, Mastodon, email, copy link, native share), choose which document types accept likes, and read the most-liked content from a Content dashboard. Likes are limited per visitor and per address, and the address is hashed with a daily salt and never stored. Render with view components, a tag helper or an HtmlHelper extension. Free and MIT licensed.",
+  "AuthorDetails": {
+    "Name": "BaryoDev",
+    "Description": "Small open source .NET and JavaScript packages.",
+    "Url": "https://github.com/BaryoDev",
+    "ImageUrl": "https://raw.githubusercontent.com/BaryoDev/BaryoDev.Umbraco.ShareLike/main/icon.png"
+  },
+  "DocumentationUrl": "https://github.com/BaryoDev/BaryoDev.Umbraco.ShareLike#readme",
+  "IssueTrackerUrl": "https://github.com/BaryoDev/BaryoDev.Umbraco.ShareLike/issues",
+  "LicenseTypes": [ "Free" ],
+  "Tags": [
+    "share",
+    "like",
+    "reading time",
+    "blog",
+    "social"
+  ]
+}

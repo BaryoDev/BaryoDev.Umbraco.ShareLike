@@ -1,0 +1,61 @@
+/* Look lifted from baryo.dev. Set --bdsl-* to override, or define the site tokens (--ink, --green, ...). */
+.bdsl-like,
+.bdsl-share,
+.bdsl-reading-time {
+  --bdsl-c-ink: var(--bdsl-ink, var(--ink, #1c2321));
+  --bdsl-c-mute: var(--bdsl-ink-mute, var(--ink-mute, #6b736f));
+  --bdsl-c-paper: var(--bdsl-paper, var(--paper, #fff));
+  --bdsl-c-on-dark: var(--bdsl-on-dark, var(--on-dark, #fff));
+  --bdsl-c-yellow: var(--bdsl-yellow, var(--yellow, #ffcd3c));
+  --bdsl-c-green: var(--bdsl-green, var(--green, #0b7a55));
+  --bdsl-f-mono: var(--bdsl-font-mono, var(--font-mono, 'IBM Plex Mono', ui-monospace, monospace));
+  --bdsl-f-sans: var(--bdsl-font-sans, var(--font-sans, 'Plus Jakarta Sans', system-ui, sans-serif));
+  --bdsl-r-pill: var(--bdsl-radius-pill, var(--radius-pill, 999px));
+}
+[hidden] { display: none !important; }
+
+.bdsl-meta,
+.bdsl-reading-time {
+  font-family: var(--bdsl-f-mono);
+  font-size: 12px;
+  color: var(--bdsl-c-mute);
+}
+
+.bdsl-like { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; }
+.bdsl-like__count { font-family: var(--bdsl-f-mono); font-size: 13px; color: var(--bdsl-c-mute); }
+
+.bdsl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: var(--bdsl-r-pill);
+  font-family: var(--bdsl-f-sans);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border: 1.5px solid var(--bdsl-c-ink);
+  background: var(--bdsl-c-paper);
+  color: var(--bdsl-c-ink);
+  cursor: pointer;
+}
+.bdsl-btn:hover:not(:disabled) { background: var(--bdsl-c-yellow); color: var(--bdsl-c-ink); }
+.bdsl-btn:focus-visible { outline: 2px solid var(--bdsl-c-green); outline-offset: 2px; }
+.bdsl-btn:disabled { cursor: default; }
+
+.bdsl-share { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.bdsl-share .bdsl-meta { display: inline; }
+.bdsl-share__link {
+  font-family: var(--bdsl-f-mono);
+  font-size: 13px;
+  color: var(--bdsl-c-ink);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.bdsl-share__link:hover { color: var(--bdsl-c-green); }
+
+.bdsl-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

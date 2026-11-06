@@ -1,0 +1,29 @@
+/* baryo.dev tokens, scoped to the Most liked dashboard. Nothing here touches the rest of the backoffice. */
+.sl {
+  --ink: #1c2321;
+  --ink-soft: #4d5552;
+  --paper-sand: #fbf7ee;
+  --line: #ece4d0;
+  --green: #0b7a55;
+  --green-deep: #075a3e;
+  --orange: #d9501f;
+  color: var(--ink);
+  background: var(--paper-sand);
+  padding: 20px;
+  font-family: system-ui, sans-serif;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+.sl * { box-sizing: border-box; }
+.sl-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.sl-head img { height: 28px; display: block; }
+.sl-head span { color: var(--ink-soft); font-size: 13px; }
+.sl-box { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 12px; }
+.sl-box h3 { margin: 0; font-size: 16px; }
+.sl-note { color: var(--ink-soft); font-size: 13px; }
+.sl-err { padding: 8px 12px; background: #fdeae4; border: 1px solid var(--orange); border-radius: 6px; }
+.sl-table { border-collapse: collapse; width: 100%; }
+.sl-table th, .sl-table td { text-align: left; padding: 6px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.sl-table td.n, .sl-table th.n { text-align: right; width: 90px; }
+.sl-bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.sl-bar > div { height: 100%; background: var(--green); }
