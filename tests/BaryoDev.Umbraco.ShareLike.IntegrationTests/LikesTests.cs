@@ -113,4 +113,21 @@ public class LikesTests : UmbracoIntegrationTest
 
         Assert.That(store.Get(post), Is.EqualTo(50));
     }
+
+    [Test]
+    public async Task Tied_counts_page_in_post_key_order()
+    {
+        await RunPlan(new ShareLikeMigrationPlan());
+        var store = new LikeStore(ScopeProvider);
+
+        // Inserted in reverse, so insertion order alone would page them backwards.
+        var keys = Enumerable.Range(1, 5).Select(i => Guid.Parse($"00000000-0000-0000-0000-00000000000{i}")).ToList();
+        foreach (var key in Enumerable.Reverse(keys))
+        {
+            store.Increment(key);
+        }
+
+        var paged = store.Top(1, 2).Concat(store.Top(2, 2)).Concat(store.Top(3, 2)).Select(t => t.Key).ToList();
+        Assert.That(paged, Is.EqualTo(keys));
+    }
 }
