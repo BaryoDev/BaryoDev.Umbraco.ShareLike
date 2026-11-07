@@ -6,8 +6,8 @@
     <Description>Share buttons, a rate-limited like count and reading time for Umbraco 17, with a most-liked dashboard.</Description>
     <PackageTags>umbraco umbraco-marketplace share like reading-time blog</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/BaryoDev/BaryoDev.Umbraco.ShareLike</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/BaryoDev/BaryoDev.Umbraco.ShareLike</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/BaryoDev/umbraco-share-like</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/BaryoDev/umbraco-share-like</RepositoryUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
