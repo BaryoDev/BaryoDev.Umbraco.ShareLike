@@ -55,7 +55,7 @@ public sealed class LikeStore(IScopeProvider scopes) : ILikeStore
         var result = scope.Database.Page<LikeDto>(
             Math.Max(1, page),
             Math.Clamp(pageSize, 1, 200),
-            $"SELECT * FROM {s.GetQuotedTableName(LikeDto.TableName)} ORDER BY {s.GetQuotedColumnName("Count")} DESC");
+            $"SELECT * FROM {s.GetQuotedTableName(LikeDto.TableName)} ORDER BY {s.GetQuotedColumnName("Count")} DESC, {s.GetQuotedColumnName("PostKey")} ASC");
         return result.Items.Select(r => new LikeTotal(r.PostKey, r.Count)).ToList();
     }
 

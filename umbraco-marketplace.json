@@ -7,10 +7,10 @@
     "Name": "BaryoDev",
     "Description": "Small open source .NET and JavaScript packages.",
     "Url": "https://github.com/BaryoDev",
-    "ImageUrl": "https://raw.githubusercontent.com/BaryoDev/BaryoDev.Umbraco.ShareLike/main/icon.png"
+    "ImageUrl": "https://raw.githubusercontent.com/BaryoDev/umbraco-share-like/main/icon.png"
   },
-  "DocumentationUrl": "https://github.com/BaryoDev/BaryoDev.Umbraco.ShareLike#readme",
-  "IssueTrackerUrl": "https://github.com/BaryoDev/BaryoDev.Umbraco.ShareLike/issues",
+  "DocumentationUrl": "https://github.com/BaryoDev/umbraco-share-like#readme",
+  "IssueTrackerUrl": "https://github.com/BaryoDev/umbraco-share-like/issues",
   "LicenseTypes": [ "Free" ],
   "Tags": [
     "share",
