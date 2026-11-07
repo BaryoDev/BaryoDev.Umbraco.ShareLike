@@ -98,15 +98,17 @@ public class LikesTests : UmbracoIntegrationTest
         var store = new LikeStore(ScopeProvider);
         var post = Guid.NewGuid();
 
-        var gate = new TaskCompletionSource();
+        // Dedicated threads released together by a barrier, so the increments really overlap.
+        using var barrier = new Barrier(50);
         var tasks = Enumerable.Range(0, 50)
-            .Select(_ => Task.Run(async () =>
-            {
-                await gate.Task;
-                store.Increment(post);
-            }))
+            .Select(_ => Task.Factory.StartNew(
+                () =>
+                {
+                    Assert.That(barrier.SignalAndWait(TimeSpan.FromSeconds(30)), Is.True);
+                    store.Increment(post);
+                },
+                TaskCreationOptions.LongRunning))
             .ToArray();
-        gate.SetResult();
         await Task.WhenAll(tasks);
 
         Assert.That(store.Get(post), Is.EqualTo(50));

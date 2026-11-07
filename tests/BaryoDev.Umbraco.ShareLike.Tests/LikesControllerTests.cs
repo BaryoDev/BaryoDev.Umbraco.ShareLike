@@ -78,6 +78,32 @@ public class LikesControllerTests
     }
 
     [Fact]
+    public void Sec_fetch_site_same_origin_wins_over_a_foreign_origin()
+    {
+        var (controller, store) = Build(r =>
+        {
+            r.Headers["Sec-Fetch-Site"] = "same-origin";
+            r.Headers["Origin"] = "https://evil.example";
+        });
+
+        Assert.Equal(200, Status(controller.Like(Post)));
+        Assert.Equal(1, store.Get(Post));
+    }
+
+    [Fact]
+    public void Sec_fetch_site_cross_site_wins_over_a_matching_origin()
+    {
+        var (controller, store) = Build(r =>
+        {
+            r.Headers["Sec-Fetch-Site"] = "cross-site";
+            r.Headers["Origin"] = "https://example.com";
+        });
+
+        Assert.Equal(403, Status(controller.Like(Post)));
+        Assert.Equal(0, store.Get(Post));
+    }
+
+    [Fact]
     public void Origin_with_a_malformed_value_is_refused()
     {
         var (controller, _) = Build(r => r.Headers["Origin"] = "not a url");

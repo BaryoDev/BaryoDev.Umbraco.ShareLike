@@ -212,6 +212,21 @@ public class TopTests : UmbracoIntegrationTest
     }
 
     [Test]
+    public async Task Root_access_plus_an_unrelated_start_node_still_sees_everything()
+    {
+        var (_, b) = Arrange(out var sectionA);
+        var editor = await CreateEditor(u =>
+        {
+            u.HasContentRootAccess = true;
+            u.ContentStartNodeKeys = new HashSet<Guid> { sectionA };
+        });
+
+        var items = await Top(editor, 3);
+
+        Assert.That(items.Select(i => i.Key), Is.EqualTo(new[] { b[5], b[4], b[3] }));
+    }
+
+    [Test]
     public async Task User_without_start_nodes_sees_nothing()
     {
         Arrange(out _);
