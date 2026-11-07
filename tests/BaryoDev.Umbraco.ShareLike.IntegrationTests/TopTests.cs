@@ -212,9 +212,9 @@ public class TopTests : UmbracoIntegrationTest
     }
 
     [Test]
-    public async Task Root_access_plus_an_unrelated_start_node_still_sees_everything()
+    public async Task Root_access_plus_a_narrower_start_node_is_narrowed_like_the_content_tree()
     {
-        var (_, b) = Arrange(out var sectionA);
+        var (a, _) = Arrange(out var sectionA);
         var editor = await CreateEditor(u =>
         {
             u.HasContentRootAccess = true;
@@ -223,7 +223,7 @@ public class TopTests : UmbracoIntegrationTest
 
         var items = await Top(editor, 3);
 
-        Assert.That(items.Select(i => i.Key), Is.EqualTo(new[] { b[5], b[4], b[3] }));
+        Assert.That(items.Select(i => i.Key), Is.EqualTo(new[] { a[3], a[2], a[1] }));
     }
 
     [Test]
