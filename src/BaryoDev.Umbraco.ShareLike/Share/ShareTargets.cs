@@ -12,7 +12,7 @@ public static class ShareTargets
         return target.ToLowerInvariant() switch
         {
             "linkedin" => new("linkedin", "LinkedIn", $"https://www.linkedin.com/sharing/share-offsite/?url={u}", true),
-            "x" => new("x", "X", $"https://twitter.com/intent/tweet?url={u}&text={t}", true),
+            "x" => new("x", "X", $"https://x.com/intent/tweet?url={u}&text={t}", true),
             "facebook" => new("facebook", "Facebook", $"https://www.facebook.com/sharer/sharer.php?u={u}", true),
             "bluesky" => new("bluesky", "Bluesky", $"https://bsky.app/intent/compose?text={both}", true),
             "mastodon" => new("mastodon", "Mastodon", $"https://{mastodonInstance}/share?text={both}", true),
