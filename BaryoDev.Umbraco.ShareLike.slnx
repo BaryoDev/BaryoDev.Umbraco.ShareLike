@@ -2,4 +2,8 @@
   <Folder Name="/src/">
     <Project Path="src/BaryoDev.Umbraco.ShareLike/BaryoDev.Umbraco.ShareLike.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BaryoDev.Umbraco.ShareLike.Tests/BaryoDev.Umbraco.ShareLike.Tests.csproj" />
+    <Project Path="tests/BaryoDev.Umbraco.ShareLike.IntegrationTests/BaryoDev.Umbraco.ShareLike.IntegrationTests.csproj" />
+  </Folder>
 </Solution>
